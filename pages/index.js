@@ -119,6 +119,12 @@ function App() {
     return data.slice(startIndex, endIndex);
   };
 
+  const getGitHubUsername = (profile) => {
+    const githubUrl = profile.social?.GitHub;
+    if (!githubUrl) return profile.name;
+    return githubUrl.replace(/\/+$/, "").split("/").pop();
+  };
+
   const renderProfiles = () => {
     if (loadingProfiles) {
       return (
@@ -126,14 +132,14 @@ function App() {
           {Array(5)
             .fill("profile-skeleton")
             .map((item, index) => (
-              <ProfileSkeleton key={index} />
+              <ProfileSkeleton key={`${item}-${index}`} />
             ))}
         </>
       );
     }
     const paginatedData = getPaginatedData();
-    return paginatedData.map((currentRecord, index) => (
-      <Profile data={currentRecord} key={index} />
+    return paginatedData.map((currentRecord) => (
+      <Profile data={currentRecord} key={getGitHubUsername(currentRecord)} />
     ));
   };
 
